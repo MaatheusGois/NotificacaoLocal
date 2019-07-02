@@ -12,6 +12,7 @@
 		86C8C62822C2EB5500FCF68D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86C8C62622C2EB5500FCF68D /* Main.storyboard */; };
 		86C8C62A22C2EB5800FCF68D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 86C8C62922C2EB5800FCF68D /* Assets.xcassets */; };
 		86C8C62D22C2EB5800FCF68D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86C8C62B22C2EB5800FCF68D /* LaunchScreen.storyboard */; };
+		86C8C63622C2F25400FCF68D /* logo.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = 86C8C63522C2F25400FCF68D /* logo.jpeg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,8 @@
 		86C8C62922C2EB5800FCF68D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		86C8C62C22C2EB5800FCF68D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		86C8C62E22C2EB5800FCF68D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		86C8C63422C2F01B00FCF68D /* NoticacaoLocal.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NoticacaoLocal.entitlements; sourceTree = "<group>"; };
+		86C8C63522C2F25400FCF68D /* logo.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = logo.jpeg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,11 +57,13 @@
 		86C8C62122C2EB5500FCF68D /* NoticacaoLocal */ = {
 			isa = PBXGroup;
 			children = (
+				86C8C63422C2F01B00FCF68D /* NoticacaoLocal.entitlements */,
 				86C8C62222C2EB5500FCF68D /* AppDelegate.swift */,
 				86C8C62422C2EB5500FCF68D /* ViewController.swift */,
 				86C8C62622C2EB5500FCF68D /* Main.storyboard */,
 				86C8C62922C2EB5800FCF68D /* Assets.xcassets */,
 				86C8C62B22C2EB5800FCF68D /* LaunchScreen.storyboard */,
+				86C8C63522C2F25400FCF68D /* logo.jpeg */,
 				86C8C62E22C2EB5800FCF68D /* Info.plist */,
 			);
 			path = NoticacaoLocal;
@@ -96,6 +101,14 @@
 				TargetAttributes = {
 					86C8C61E22C2EB5500FCF68D = {
 						CreatedOnToolsVersion = 10.2.1;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -122,6 +135,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				86C8C63622C2F25400FCF68D /* logo.jpeg in Resources */,
 				86C8C62D22C2EB5800FCF68D /* LaunchScreen.storyboard in Resources */,
 				86C8C62A22C2EB5800FCF68D /* Assets.xcassets in Resources */,
 				86C8C62822C2EB5500FCF68D /* Main.storyboard in Resources */,
@@ -282,6 +296,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = NoticacaoLocal/NoticacaoLocal.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CTAFH43K36;
 				INFOPLIST_FILE = NoticacaoLocal/Info.plist;
@@ -300,6 +315,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = NoticacaoLocal/NoticacaoLocal.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CTAFH43K36;
 				INFOPLIST_FILE = NoticacaoLocal/Info.plist;
