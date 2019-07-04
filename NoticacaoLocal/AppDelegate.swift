@@ -7,28 +7,33 @@
 //
 
 import UIKit
+
+//Importamos a framework
 import UserNotifications
+
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     
-    //Criando o centro de Notifições, ele é resposável por todo o gerenciamento das mesmas
-    let notificationCenter = UNUserNotificationCenter.current()
+    //Criando o centro de Notifições que é resposável por todo o
+    //gerenciamento das mesmas
+    let centroDeNotificacao = UNUserNotificationCenter.current()
     
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions
+        launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
+        //Para usar podermos usar o protocolo UNUserNotificationCenterDelegate
+        //na extensão mais abaixo
+        centroDeNotificacao.delegate = self
         
-        //Para usar podermos usar o protocolo UNUserNotificationCenterDelegate na extensão mais abaixo
-        notificationCenter.delegate = self
-        
-        //Aqui pedimos três coisas ao usuário, para a notificação gerar um alerta com som e um pontinho vermelhor junto ao logo da nossa aplicação
+        //Aqui pedimos três coisas ao usuário, para a notificação gerar um alerta
+        //com som e um pontinho vermelhor junto ao logo da nossa aplicação
         let opcoes: UNAuthorizationOptions = [.alert, .sound, .badge]
         
         //Método que pede permissão ao usuáio
-        notificationCenter.requestAuthorization(options: opcoes) {
+        centroDeNotificacao.requestAuthorization(options: opcoes) {
             (foiPermitido, error) in
             if !foiPermitido {
                 print("O usúario não permitiu, não podemos enviar notificacão")
@@ -66,13 +71,65 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
     
-    //Quando a notificacao é enviada
+    func enviarNotificacao(_ titulo:String, _ subtitulo:String, _ mensagem:String, _ identificador:String, _ tempo:TimeInterval) {
+        
+        //Essa instancia de classe é necessária para criar o corpo da notificação
+        let contexto = UNMutableNotificationContent()
+        
+        //Criando corpo da notificação
+        contexto.title = titulo
+        contexto.subtitle = subtitulo
+        contexto.body = mensagem
+        contexto.sound = UNNotificationSound.default
+        //Badge é a o alerta vermelho que fica no icone do aplicativo quando há notificações e ela pode ser incrementada
+        contexto.badge = 1
+        contexto.categoryIdentifier = identificador
+        
+        
+        //Colocando a imgem de fundo
+        let nomeDaImagem = "logo"
+        //Aqui verificamos se a mensagem realmente existe, caso ela não exista ele para a função a retornando.
+        guard let imageURL = Bundle.main.url(forResource: nomeDaImagem, withExtension: "jpeg") else { return }
+        //Anexando a imagem
+        let anexo = try! UNNotificationAttachment(identifier: nomeDaImagem, url: imageURL, options: .none)
+        contexto.attachments = [anexo]
+        
+        
+        //Criando os botões de ações
+        let acaoDeSoneca = UNNotificationAction(identifier: "Soneca", title: "Soneca", options: [])
+        let acaoDeDesligar = UNNotificationAction(identifier: "Desligar", title: "Desligar", options: [.destructive])
+        let categoria = UNNotificationCategory(identifier: identificador,
+                                               actions: [acaoDeSoneca, acaoDeDesligar],
+                                               intentIdentifiers: [],
+                                               options: [])
+        
+        
+        //Adicionando as ações ao nosso centro de notificações
+        centroDeNotificacao.setNotificationCategories([categoria])
+        
+        //Criando a requisição
+        let gatilho = UNTimeIntervalNotificationTrigger(timeInterval: tempo, repeats: false)
+        let requisicao = UNNotificationRequest(identifier: identificador, content: contexto, trigger: gatilho)
+        
+        //Adicionando a requisição ao nosso centro de notificações
+        centroDeNotificacao.add(requisicao) { (error) in
+            if let error = error {
+                print("Deu ruim: \(error.localizedDescription)")
+            }
+        }
+        
+        
+        
+        
+    }
+    
+    //Quando a notificacao é enviada e o aplicativo está aberto
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         
-
-        //Aqui definimos que a notificação deve gerar um alerta com som
+        
+        //Aqui definimos que a notificação deve gerar um alerta com som, mas sem o badge
         completionHandler([.alert,.sound])
     }
     
@@ -96,59 +153,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         //Não há retorno
         completionHandler()
     }
-    
-    
-    
-    func enviarNotificacao(_ titulo:String, _ subtitulo:String, _ mensagem:String, _ identificador:String) {
-        
-        //Essa instancia de classe é necessária para criar o corpo da notificação
-        let contexto = UNMutableNotificationContent()
-        
-        //Criando corpo da notificação
-        contexto.title = titulo
-        contexto.subtitle = subtitulo
-        contexto.body = mensagem
-        contexto.sound = UNNotificationSound.default
-        //Badge é a bolinha vermelha que fica no icone do aplicativo quando tem mensagens, ela pode ser incrementada e também deve ser zerada quando o usúario ver a notificação
-        contexto.badge = 1
-        contexto.categoryIdentifier = identificador
-        
-        
-        //Colocando a imgem de fundo
-        let nomeDaImagem = "logo"
-        //Aqui verificamos se a mensagem realmente existe, caso ela não exista ele para a função a retornando.
-        guard let imageURL = Bundle.main.url(forResource: nomeDaImagem, withExtension: "jpeg") else { return }
-        //Anexando a imagem
-        let anexo = try! UNNotificationAttachment(identifier: nomeDaImagem, url: imageURL, options: .none)
-        contexto.attachments = [anexo]
-        
-        
-        
-        
-        //Criando a requisição
-        let gatilho = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
-        let requisicao = UNNotificationRequest(identifier: identificador, content: contexto, trigger: gatilho)
-        
-        
-        //Adicionando a requisição ao nosso centro de notificações
-        notificationCenter.add(requisicao) { (error) in
-            if let error = error {
-                print("Deu ruim: \(error.localizedDescription)")
-            }
-        }
-        
-        
-        
-        //Criando os botões de ações
-        let acaoDeSoneca = UNNotificationAction(identifier: "Soneca", title: "Soneca", options: [])
-        let acaoDeDesligar = UNNotificationAction(identifier: "Desligar", title: "Desligar", options: [.destructive])
-        let categoria = UNNotificationCategory(identifier: identificador,
-                                              actions: [acaoDeSoneca, acaoDeDesligar],
-                                              intentIdentifiers: [],
-                                              options: [])
-        
-        
-        //Adicionando as ações ao nosso centro de notificações
-        notificationCenter.setNotificationCategories([categoria])
-    }
 }
+
+
